@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prompt App</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    #app {
+      margin-top: 50px;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      width: 600px;
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #ff6a00, #ee0979);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    input {
+      width: 70%;
+      padding: 12px;
+      font-size: 14px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    button {
+      margin-left: 10px;
+      padding: 12px 20px;
+      background: linear-gradient(90deg, #ff512f, #dd2476);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    #output {
+      margin-top: 25px;
+      display: grid;
+      gap: 15px;
+    }
+
+    .card {
+      padding: 18px;
+      border-radius: 12px;
+      color: white;
+      font-size: 15px;
+      line-height: 1.4;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .tweet-a { background: linear-gradient(135deg, #ff7e5f, #feb47b); }
+    .tweet-b { background: linear-gradient(135deg, #43cea2, #185a9d); }
+    .prediction { background: linear-gradient(135deg, #f7971e, #ffd200); color: #222; font-weight: bold; }
+    .explanation { background: linear-gradient(135deg, #6a11cb, #2575fc); }
+    .comparison { background: linear-gradient(135deg, #ff512f, #dd2476); }
+    .prompt { background: linear-gradient(135deg, #00c6ff, #0072ff); }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>🌟 Prompt App 🌟</h1>
+    <div style="display: flex; justify-content: center; align-items: center;">
+      <input id="prompt" placeholder="Enter your prompt..." />
+      <button onclick="runPrompt()">Generate</button>
+    </div>
+    <div id="output"></div>
+  </div>
+
+  <script>
+    const output = document.getElementById('output');
+
+    const runPrompt = async () => {
+      const input = document.getElementById('prompt');
+      const resp = await fetch(`http://127.0.0.1:5000/generate?prompt=${encodeURIComponent(input.value)}`);
+      const data = await resp.json();
+      console.log(data);
+
+      // Build colorful cards
+      output.innerHTML = `
+        <div class="card prompt"><strong>Prompt:</strong><br>${data.prompt}</div>
+        <div class="card tweet-a"><strong>Tweet A:</strong><br>${data.tweet_a}</div>
+        <div class="card tweet-b"><strong>Tweet B:</strong><br>${data.tweet_b}</div>
+        <div class="card comparison"><strong>Tweet A vs Tweet B:</strong><br>${data.tweet_a_vs_tweet_b}</div>
+        <div class="card prediction"><strong>Prediction:</strong><br>${data.prediction}</div>
+        <div class="card explanation"><strong>Explanation:</strong><br>${data.explanation}</div>
+      `;
+    };
+  </script>
+</body>
+</html>
